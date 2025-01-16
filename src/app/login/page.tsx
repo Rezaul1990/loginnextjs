@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { signIn } from '@/lib/firebase/services';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { AuthError } from '@/types/auth';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -15,8 +16,9 @@ export default function Login() {
     try {
       await signIn(email, password);
       router.push('/dashboard');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const authError = err as AuthError;
+      setError(authError.message || 'An error occurred');
     }
   };
 
